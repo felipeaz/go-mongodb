@@ -23,7 +23,8 @@ func main() {
 		}
 	}()
 
-	userRepository := repository.NewUserRepository()
+	collection := cli.C.Database(os.Getenv("sandbox")).Collection("user_sandbox")
+	userRepository := repository.NewUserRepository(collection)
 	userService := service.NewUserService(userRepository, log)
 	userHandler := handler.NewUserHandler(userService, log)
 

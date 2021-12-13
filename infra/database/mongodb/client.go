@@ -7,7 +7,7 @@ import (
 )
 
 type Client struct {
-	cli *mongo.Client
+	C *mongo.Client
 }
 
 func Connect(clusterUri string) (*Client, error) {
@@ -15,9 +15,9 @@ func Connect(clusterUri string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{cli: client}, nil
+	return &Client{C: client}, nil
 }
 
 func (c Client) Disconnect() error {
-	return c.cli.Disconnect(context.TODO())
+	return c.C.Disconnect(context.TODO())
 }
