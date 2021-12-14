@@ -49,9 +49,17 @@ func (r UserRepository) Create(user domain.User) (*domain.User, error) {
 }
 
 func (r UserRepository) UpdateOne(id string, user domain.User) error {
+	_, err := r.Collection.UpdateOne(context.TODO(), bson.M{"_id": id}, user.GetBson())
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (r UserRepository) Delete(id string) error {
+	_, err := r.Collection.DeleteOne(context.TODO(), bson.M{"_id": id})
+	if err != nil {
+		return err
+	}
 	return nil
 }
