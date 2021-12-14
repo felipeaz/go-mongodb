@@ -33,7 +33,11 @@ func (r UserRepository) FindAll() ([]byte, error) {
 }
 
 func (r UserRepository) FindOne(id string) ([]byte, error) {
-	return nil, nil
+	var result bson.M
+	if err := r.Collection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&result); err != nil {
+		return nil, err
+	}
+	return json.MarshalIndent(result, "", "	")
 }
 
 func (r UserRepository) Create(user domain.User) (*domain.User, error) {
