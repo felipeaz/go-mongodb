@@ -19,8 +19,8 @@ func NewUserService(repository domain.UserRepository, log *logrus.Logger) UserSe
 	}
 }
 
-func (s UserService) FindAll() ([]domain.User, error) {
-	var users []domain.User
+func (s UserService) FindAll() ([]interface{}, error) {
+	var users []interface{}
 
 	resp, err := s.UserRepository.FindAll()
 	if err != nil {
@@ -35,8 +35,8 @@ func (s UserService) FindAll() ([]domain.User, error) {
 	return users, nil
 }
 
-func (s UserService) FindOne(id string) (*domain.User, error) {
-	var user domain.User
+func (s UserService) FindOne(id string) (interface{}, error) {
+	var user interface{}
 
 	resp, err := s.UserRepository.FindOne(id)
 	if err != nil {
@@ -51,9 +51,9 @@ func (s UserService) FindOne(id string) (*domain.User, error) {
 	return &user, nil
 }
 
-func (s UserService) Create(user domain.User) (*domain.User, error) {
-	user.Id = uuid.NewString()
-	resp, err := s.UserRepository.Create(user)
+func (s UserService) Create(input map[string]interface{}) (interface{}, error) {
+	input["_id"] = uuid.NewString()
+	resp, err := s.UserRepository.Create(input)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +61,8 @@ func (s UserService) Create(user domain.User) (*domain.User, error) {
 	return resp, nil
 }
 
-func (s UserService) UpdateOne(id string, user domain.User) error {
-	return s.UserRepository.UpdateOne(id, user)
+func (s UserService) UpdateOne(id string, input map[string]interface{}) error {
+	return s.UserRepository.UpdateOne(id, input)
 }
 
 func (s UserService) Delete(id string) error {

@@ -41,13 +41,13 @@ func (h UserHandler) FindOne(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) Create(w http.ResponseWriter, r *http.Request) {
-	u, err := getInputFromRequest(r)
+	input, err := getInputFromRequest(r)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err)
 		return
 	}
 
-	user, err := h.UserService.Create(u)
+	user, err := h.UserService.Create(input)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err)
 		return
@@ -56,14 +56,14 @@ func (h UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h UserHandler) UpdateOne(w http.ResponseWriter, r *http.Request) {
-	u, err := getInputFromRequest(r)
+	input, err := getInputFromRequest(r)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	params := mux.Vars(r)
-	err = h.UserService.UpdateOne(params["id"], u)
+	err = h.UserService.UpdateOne(params["id"], input)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err)
 		return
@@ -81,11 +81,12 @@ func (h UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, true)
 }
 
-func getInputFromRequest(r *http.Request) (domain.User, error) {
-	var u domain.User
+func getInputFromRequest(r *http.Request) (map[string]interface{}, error) {
+	var input map[string]interface{}
+
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&u); err != nil {
-		return domain.User{}, err
+	if err := decoder.Decode(&input); err != nil {
+		return nil, err
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -94,7 +95,7 @@ func getInputFromRequest(r *http.Request) (domain.User, error) {
 		}
 	}(r.Body)
 
-	return u, nil
+	return input, nil
 }
 
 func respondWithError(w http.ResponseWriter, code int, err error) {

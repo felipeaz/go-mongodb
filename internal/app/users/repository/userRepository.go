@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"encoding/json"
-	"go-mongodb/internal/app/domain"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -40,16 +39,16 @@ func (r UserRepository) FindOne(id string) ([]byte, error) {
 	return json.MarshalIndent(result, "", "	")
 }
 
-func (r UserRepository) Create(user domain.User) (*domain.User, error) {
-	_, err := r.Collection.InsertOne(context.TODO(), user.GetBson())
+func (r UserRepository) Create(input map[string]interface{}) (interface{}, error) {
+	_, err := r.Collection.InsertOne(context.TODO(), input)
 	if err != nil {
 		return nil, err
 	}
-	return &user, nil
+	return input, nil
 }
 
-func (r UserRepository) UpdateOne(id string, user domain.User) error {
-	_, err := r.Collection.UpdateOne(context.TODO(), bson.M{"_id": id}, user.GetBson())
+func (r UserRepository) UpdateOne(id string, input map[string]interface{}) error {
+	_, err := r.Collection.UpdateOne(context.TODO(), bson.M{"_id": id}, input)
 	if err != nil {
 		return err
 	}
