@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"context"
+	"encoding/json"
 	"go-mongodb/internal/app/domain"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -16,15 +19,29 @@ func NewUserRepository(collection *mongo.Collection) UserRepository {
 }
 
 func (r UserRepository) FindAll() ([]byte, error) {
-	return nil, nil
+	cursor, err := r.Collection.Find(context.TODO(), bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	var result []bson.M
+	if err = cursor.All(context.TODO(), &result); err != nil {
+		return nil, err
+	}
+
+	return json.MarshalIndent(result, "", "	")
 }
 
 func (r UserRepository) FindOne(id string) ([]byte, error) {
 	return nil, nil
 }
 
-func (r UserRepository) Create(user domain.User) ([]byte, error) {
-	return nil, nil
+func (r UserRepository) Create(user domain.User) (*domain.User, error) {
+	_, err := r.Collection.InsertOne(context.TODO(), user.GetBson())
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (r UserRepository) UpdateOne(id string, user domain.User) error {

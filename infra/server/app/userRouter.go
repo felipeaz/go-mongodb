@@ -7,10 +7,10 @@ import (
 
 func Route(userHandler handler.UserHandler) *mux.Router {
 	route := mux.NewRouter()
-	route.HandleFunc("/", userHandler.FindAll).Methods("GET")
-	route.HandleFunc("/{id}", userHandler.FindOne).Methods("GET")
-	route.HandleFunc("/", userHandler.Create).Methods("POST")
-	route.HandleFunc("/{id}", userHandler.UpdateOne).Methods("PUT")
-	route.HandleFunc("/{id}", userHandler.Delete).Methods("DELETE")
+	route.HandleFunc("/users", userHandler.FindAll).Methods("GET")
+	route.HandleFunc("/users/{id}", userHandler.FindOne).Methods("GET")
+	route.HandleFunc("/users", userHandler.Create).Methods("POST")
+	route.HandleFunc("/users/{id}", userHandler.UpdateOne).Methods("PUT")
+	route.HandleFunc("/users/{id}", userHandler.Delete).Methods("DELETE")
 	return route
 }

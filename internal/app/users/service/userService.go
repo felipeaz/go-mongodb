@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"go-mongodb/internal/app/domain"
 )
@@ -51,19 +52,13 @@ func (s UserService) FindOne(id string) (*domain.User, error) {
 }
 
 func (s UserService) Create(user domain.User) (*domain.User, error) {
-	var usr domain.User
-
+	user.Id = uuid.NewString()
 	resp, err := s.UserRepository.Create(user)
 	if err != nil {
 		return nil, err
 	}
 
-	err = json.Unmarshal(resp, &user)
-	if err != nil {
-		return nil, err
-	}
-
-	return &usr, nil
+	return resp, nil
 }
 
 func (s UserService) UpdateOne(id string, user domain.User) error {
